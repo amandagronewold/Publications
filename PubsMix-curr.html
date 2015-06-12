@@ -1,0 +1,95 @@
+// Not broken, but not displaying any data
+
+@using ToSic.Eav.DataSources
+@{ 
+    int rowCounter = 0;
+    var mid = Dnn.Module.ModuleID.ToString();
+    var allItems = CreateSource<EntityTypeFilter>();
+    allItems.TypeName = "e_ReportCategories";    
+    }
+
+<div class="portfolio-filters">
+<div class="row">
+<div class="col-md-12">
+<ul class="filters">
+    <li>
+    <a href="#" class="filter" data-filter="all">All</a>
+    </li>
+@foreach (var dict in allItems.List) {
+        var Content = AsDynamic(dict.Value);
+        var Pubs = ((ToSic.Eav.IEntity)AsEntity(Content))
+            .Relationships.AllParents
+            .Where(c => c.Type.Name == "Publications");
+    <li>
+    <a href="#" class="filter" data-filter="@Content.DataFilter">@Content.CategoryName</a>
+    </li>
+  }
+</ul>
+</div>
+</div>
+</div>
+
+
+<div class="row portfolio-items">
+	<div id="grid">
+
+
+@foreach (var dict in allItems.List) {
+        var Content = AsDynamic(dict.Value);
+        var Pubs = ((ToSic.Eav.IEntity)AsEntity(Content))
+            .Relationships.AllParents
+            .Where(c => c.Type.Name == "Publications");
+
+ if(Pubs.Any()){
+foreach(var p in Pubs.OrderByDescending(e => AsDynamic(e).DateCreated)) {
+var pub = AsDynamic(p);
+
+
+	<div style="display: inline-block; opacity: 1; height: 520px;" class="@Content.DataFilter mix item col-md-3 mix_all">
+@Content.Toolbar
+
+<h4 style="line-height: 1.2 !important;">@pub.Name</h4>
+<a href="@pub.issuu" target="_blank">
+		<img src="@pub.Thumbnail" class="item-image" alt="@pub.Name cover" />
+	</a>	
+
+<div class="item-meta-container">
+		
+<p style="font-size: .9em; font-style: italic;">
+		@if(pub.Author != "") {
+		@pub.Author
+}
+	else {
+	<span>Research & Curriculum Unit</span>
+	}
+	
+</p>
+
+		
+			<a href="@pub.issuu" class="rox_short_button small sunset" target="_blank">
+			<em class="micon-book-4"></em> Read online</a>
+			<br />
+			<a href="@pub.File">Download PDF</a>
+
+
+</div>
+</div>
+}
+}
+}
+	<div style="display: inline-block; opacity: 1; height: 520px;" class="Connections mix item col-md-3 mix_all">
+
+<h3>WANT YOUR SCHOOL FEATURED IN CONNECTIONS?
+</h3>
+
+<p style="font-size: .9em; font-style: italic;">
+We want to hear about your success stories, awards, and program accomplishments. If you have a story idea, please email <a href="mailto:helpdesk@rcu.msstate.edu">helpdesk@rcu.msstate.edu</a>.
+</p>
+
+</div>
+
+
+
+
+</div>
+</div>
